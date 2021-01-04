@@ -2,7 +2,7 @@ int soft_push_signals[] = {5, 7};
 int hard_push_signals[] = {4, 6};
 int synchro_signal = 3;
 int switch_signal = 2;
-const byte sequence_length = 20;
+const byte sequence_length = 182;
 //Za pomocą wait_time reguluje się czas między wykonaniem pary zdjęć
 const unsigned long wait_time = 2000;
 volatile byte light_states[][2] = {{33, 0}, {2, 1}, {33, 0}, {4, 1}, {33, 0}, {6, 1}, {33, 0}, {8, 1}, {33, 0}, {10, 1}, {33, 0}, {12, 1}, 
@@ -36,10 +36,10 @@ void setup() {
     digitalWrite(soft_push_signals[i], LOW);
     digitalWrite(hard_push_signals[i], LOW);
   }
-  DDRB = B11111111;
-  DDRC = B11111111;
   PORTB = 0;
   PORTC = 0;
+  DDRB = B11111111;
+  DDRC = B11111111;
   pinMode(synchro_signal, INPUT_PULLUP);
   pinMode(switch_signal, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(synchro_signal), lights_change, FALLING);
