@@ -31,10 +31,10 @@ byte switch_state;
 void setup() {
   for(int i = 0; i < 2; i++)
   {
-    pinMode(soft_push_signals[i], OUTPUT);
-    pinMode(hard_push_signals[i], OUTPUT);
     digitalWrite(soft_push_signals[i], LOW);
     digitalWrite(hard_push_signals[i], LOW);
+    pinMode(soft_push_signals[i], OUTPUT);
+    pinMode(hard_push_signals[i], OUTPUT);
   }
   PORTB = 0;
   PORTC = 0;
