@@ -1,10 +1,14 @@
+const byte test_lenght = 12;
+volatile byte test_portc[] = {1, 2, 4, 8, 16, 32, 0, 0, 0, 0,  0,  0};
+volatile byte test_portb[] = {0, 0, 0, 0,  0,  0, 1, 2, 4, 8, 16, 32};
+
 int soft_push_signals[] = {5, 7};
 int hard_push_signals[] = {4, 6};
 int synchro_signal = 3;
 int switch_signal = 2;
 const byte sequence_length = 182;
 //Za pomocą wait_time reguluje się czas między wykonaniem pary zdjęć
-const unsigned long shots_wait_time = 2000;
+const unsigned long shots_wait_time = 3000;
 const unsigned long impulse_length = 20;
 volatile byte light_states[][2] = {{33, 0}, {2, 1}, {33, 0}, {4, 1}, {33, 0}, {6, 1}, {33, 0}, {8, 1}, {33, 0}, {10, 1}, {33, 0}, {12, 1}, 
                                   {33, 0}, {14, 1}, {33, 0}, {16, 1}, {33, 0}, {18, 1}, {33, 0}, {20, 1}, {33, 0}, {22, 1}, {33, 0}, {24, 1}, 
@@ -44,6 +48,28 @@ void setup() {
   DDRC = B11111111;
   pinMode(synchro_signal, INPUT_PULLUP);
   pinMode(switch_signal, INPUT_PULLUP);
+
+
+  for (process_state = 0; process_state < 2; process_state++) {
+     digitalWrite(soft_push_signals[process_state], HIGH);
+     delay(500);
+     digitalWrite(hard_push_signals[process_state], HIGH);
+     delay(100);
+
+     digitalWrite(hard_push_signals[process_state], LOW);
+     digitalWrite(soft_push_signals[process_state], LOW);
+     delay(400);
+  }
+
+  for (sequence_state = 0; sequence_state < test_lenght; sequence_state++) {
+    PORTB = test_portb[sequence_state % sequence_length];
+    PORTC = test_portc[sequence_state % sequence_length];
+    delay(impulse_length);
+    PORTB = 0;
+    PORTC = 0;
+    delay(500);
+  }
+  
   attachInterrupt(digitalPinToInterrupt(synchro_signal), lights_change, FALLING);
   attachInterrupt(digitalPinToInterrupt(switch_signal), button_off, RISING);
   process_state = 2;
@@ -92,7 +118,7 @@ void loop() {
           goto idle_state;
         }
       }
-      if(sequence_state == sequence_length)
+      if(sequence_state >= sequence_length)
       {
         process_state += 1;
         if(process_state == 1)
@@ -132,6 +158,9 @@ void loop() {
 }
 
 void lights_change() {
+  if (sequence_state >= sequence_length) {
+    return;
+  }
   PORTC = light_states[sequence_state][0];
   PORTB = light_states[sequence_state][1];
   sequence_state += 1;
