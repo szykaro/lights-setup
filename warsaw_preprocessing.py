@@ -1,5 +1,7 @@
-import cv2
+import numpy as np
 import os
+import cv2
+import fire
 import face_recognition
 import shutil
 from tqdm import tqdm
@@ -83,7 +85,7 @@ def parse_photos(in_dir, out_dir, crop=False):
                     else:
                         good_path = path
                     last_timestamp = timestamp
-                num_blacks = 0    
+                num_blacks = 0
         parse_pool = partial(parse_one_photo, crop=crop, temp_dir=os.path.join(temp_dir, file), out_dir=os.path.join(out_dir, file))
         pool = Pool()     
         pool.map(parse_pool, range(global_index))
@@ -97,16 +99,16 @@ def parse_one_photo(index, crop, temp_dir, out_dir):
         image = cv2.imread(old_correct_path)
         coords = crop_face(image)
         if coords.size > 0:
-            cropped_image = image[coords[0]:coords[1], coords[2]:coords[3]]
-            cv2.imwrite(old_correct_path, cropped_image)
+            cropped_image = image[max(0, coords[0]):coords[1], max(0, coords[2]):coords[3]]
+            cv2.imwrite(new_correct_path, cropped_image)
             image = cv2.imread(old_incorrect_path)
-            cropped_image = image[coords[0]:coords[1], coords[2]:coords[3]]
-            cv2.imwrite(old_incorrect_path, cropped_image)
+            cropped_image = image[max(0, coords[0]):coords[1], max(0, coords[2]):coords[3]]
+            cv2.imwrite(new_incorrect_path, cropped_image)
         
 if __name__ == "__main__":
     """
-    python3 -m photoaid.preprocessing.warsaw_preprocessing --in_dir /data_input_folder \
-        --out_dir /data_output_folder --crop True
+    python3 -m photoaid.preprocessing.warsaw_preprocessing --in_dir /data/input_folder \
+        --out_dir /data/output_folder --crop True
     """
     start_time = time.time()
     fire.Fire(parse_photos)
