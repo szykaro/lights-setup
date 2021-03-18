@@ -1,9 +1,10 @@
 import cv2
+import os
 import face_recognition
 import shutil
 from tqdm import tqdm
 import time
-from multiprocessing import Pool, Process
+from multiprocessing import Pool
 from functools import partial
 import exiftool
 
@@ -46,6 +47,7 @@ def parse_photos(in_dir, out_dir, crop=False):
         os.makedirs(temp_dir)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
+    
     for root, dirs, files in os.walk(in_dir, topdown=False):
         sorted_files = sorted(files)
         paths = [os.path.join(root, name) for name in sorted_files if '.JPG' in name]
@@ -63,12 +65,14 @@ def parse_photos(in_dir, out_dir, crop=False):
             if is_all_black(path):
                 num_blacks += 1
                 if num_blacks == 2:
-                    test = not test
-                    num_blacks = 0
+                    test = False
+                elif num_blacks == 3:
+                    test = True
             else:
                 if not test:
+                    num_blacks = 0
                     timestamp = count_timestamp(path)
-                    if (timestamp - last_timestamp) > 1:
+                    if (timestamp - last_timestamp) < 1:
                         old_incorrect_path = path
                         new_incorrect_path = os.path.join(temp_dir, file, f'{global_index}.jpg')
                         old_correct_path = good_path
@@ -82,7 +86,7 @@ def parse_photos(in_dir, out_dir, crop=False):
                 num_blacks = 0    
         parse_pool = partial(parse_one_photo, crop=crop, temp_dir=os.path.join(temp_dir, file), out_dir=os.path.join(out_dir, file))
         pool = Pool()     
-        pool.map(parse_pool, range(initial_index, global_index))
+        pool.map(parse_pool, range(global_index))
         
 def parse_one_photo(index, crop, temp_dir, out_dir):
     new_correct_path = os.path.join(out_dir, f'{index}c.jpg')
@@ -101,8 +105,8 @@ def parse_one_photo(index, crop, temp_dir, out_dir):
         
 if __name__ == "__main__":
     """
-    python3 -m photoaid.preprocessing.warsaw_preprocessing --in_dir /data/input_folder \
-        --out_dir /data/output_folder --global_index 0 --crop True
+    python3 -m photoaid.preprocessing.warsaw_preprocessing --in_dir /data_input_folder \
+        --out_dir /data_output_folder --crop True
     """
     start_time = time.time()
     fire.Fire(parse_photos)
