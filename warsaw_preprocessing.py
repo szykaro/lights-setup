@@ -102,7 +102,7 @@ def parse_one_photo(index, crop, temp_dir, out_dir):
 if __name__ == "__main__":
     """
     python3 -m photoaid.preprocessing.warsaw_preprocessing --in_dir /data/input_folder \
-        --out_dir /data/output_folder --global_index 0 --crop True
+        --out_dir /data/output_folder --crop True
     """
     start_time = time.time()
     fire.Fire(parse_photos)
