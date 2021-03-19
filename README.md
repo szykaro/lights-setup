@@ -13,5 +13,4 @@
  
 ### Uruchomienie skryptu do przetwarzania
 
-python3 -m photoaid.preprocessing.warsaw_preprocessing --in_dir input_dir_path \
-        --out_dir output_dir_path --crop True
+python3 -m warsaw_preprocessing --in_dir input_dir_path --out_dir output_dir_path --crop True
