@@ -63,7 +63,7 @@ def parse_photos(in_dir, out_dir, crop=False):
             os.makedirs(os.path.join(temp_dir, file))
         if not os.path.exists(os.path.join(out_dir, file)):
             os.makedirs(os.path.join(out_dir, file))
-        for path in tqdm(paths):        
+        for path in tqdm(paths):
             if is_all_black(path):
                 num_blacks += 1
                 if num_blacks == 2:
@@ -71,8 +71,8 @@ def parse_photos(in_dir, out_dir, crop=False):
                 elif num_blacks == 3:
                     test = True
             else:
+                num_blacks = 0
                 if not test:
-                    num_blacks = 0
                     timestamp = count_timestamp(path)
                     if (timestamp - last_timestamp) < 1:
                         old_incorrect_path = path
@@ -85,7 +85,6 @@ def parse_photos(in_dir, out_dir, crop=False):
                     else:
                         good_path = path
                     last_timestamp = timestamp
-                num_blacks = 0
         parse_pool = partial(parse_one_photo, crop=crop, temp_dir=os.path.join(temp_dir, file), out_dir=os.path.join(out_dir, file))
         pool = Pool()     
         pool.map(parse_pool, range(global_index))
@@ -107,8 +106,7 @@ def parse_one_photo(index, crop, temp_dir, out_dir):
         
 if __name__ == "__main__":
     """
-    python3 -m photoaid.preprocessing.warsaw_preprocessing --in_dir /data/input_folder \
-        --out_dir /data/output_folder --crop True
+    python3 -m warsaw_preprocessing --in_dir /data/input_folder --out_dir /data/output_folder --crop True
     """
     start_time = time.time()
     fire.Fire(parse_photos)
