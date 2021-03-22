@@ -28,7 +28,7 @@ def crop_face(image):
 
 def is_all_black(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    return np.mean(img) < 6
+    return np.mean(img) < 8
 
 def count_timestamp(path):
     """
