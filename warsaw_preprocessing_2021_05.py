@@ -49,8 +49,6 @@ def parse_photos(in_dir, out_dir, crop=False):
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     
-    index = 0
-    
     for root, dirs, files in os.walk(in_dir, topdown=False):
         sorted_files = sorted(files)
         paths = [os.path.join(root, name) for name in sorted_files if '.JPG' in name]
@@ -98,9 +96,6 @@ def parse_photos(in_dir, out_dir, crop=False):
                         series = [path]
                         good_path = path
                     last_timestamp = timestamp
-            index += 1
-            if index > 100:
-                break
         parse_pool = partial(parse_one_photo, crop=crop, temp_dir=os.path.join(temp_dir, file), 
                              out_dir=os.path.join(out_dir, file))
         pool = Pool()     
