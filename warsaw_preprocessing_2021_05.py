@@ -108,7 +108,6 @@ def parse_one_photo(index, crop, temp_dir, out_dir):
     old_incorrect_path = os.path.join(temp_dir, f'{index}.jpg')
     if crop:
         image = cv2.imread(old_correct_path)
-        image = image[int(np.size(image, 0)/2):, :, :]
         coords = crop_face(image)
         if coords.size > 0:
             cropped_image = image[max(0, coords[0]):coords[1], max(0, coords[2]):coords[3]]
