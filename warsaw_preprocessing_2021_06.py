@@ -20,7 +20,7 @@ def crop_face(image):
     elif len(face_landmarks) > 0:
         landmarks = [x for v in face_landmarks[0].values() for x in v]
         x,y,w,h = cv2.boundingRect(np.asarray(landmarks))
-        return np.array([int(y-0.9*h), int(y+1.3*h), int(x+w/2-1.1*h), int(x+w/2+1.1*h)])
+        return np.array([int(y-1*h), int(y+1.4*h), int(x+w/2-1.2*h), int(x+w/2+1.2*h)])
     return np.empty(shape=(0, 0))
 
 def parse_photos(in_dir, out_dir, workers=2):   
@@ -77,7 +77,7 @@ def get_cropped_image(image, coords):
         
 if __name__ == "__main__":
     """
-    python3 -m warsaw_preprocessing --in_dir /data/input_folder --out_dir /data/output_folder --workers num_of_workers
+    python3 -m warsaw_preprocessing_2021_06 --in_dir /data/input_folder --out_dir /data/output_folder --workers num_of_workers
     """
     start_time = time.time()
     fire.Fire(parse_photos)
