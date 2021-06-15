@@ -30,7 +30,7 @@ def parse_photos(in_dir, out_dir, workers=2):
     
     for root, dirs, files in os.walk(in_dir, topdown=False):
         sorted_files = sorted(files)
-        paths = [os.path.join(root, name) for name in sorted_files if '_a.' in name]
+        paths = [os.path.join(root, name) for name in sorted_files if '_A.' in name]
         file = root.replace(in_dir, '')
         if len(file) != 0 and file[0] == '/':
             file = file[1:]
@@ -50,14 +50,14 @@ def parse_one_photo(path, in_dir, out_dir):
     if coords.size > 0:
         cropped_image = get_cropped_image(image, coords)
         cv2.imwrite(new_path, cropped_image)
-        old_path = old_path.replace('_a.', '_b.')
-        new_path = new_path.replace('_a.', '_b.')
+        old_path = old_path.replace('_A.', '_B.')
+        new_path = new_path.replace('_A.', '_B.')
         if os.path.isfile(old_path):
             image = cv2.imread(old_path)
             cropped_image = get_cropped_image(image, coords)
             cv2.imwrite(new_path, cropped_image)
-        old_path = old_path.replace('_b.', '_c.')
-        new_path = new_path.replace('_b.', '_c.')
+        old_path = old_path.replace('_B.', '_C.')
+        new_path = new_path.replace('_B.', '_C.')
         if os.path.isfile(old_path):
             image = cv2.imread(old_path)
             cropped_image = get_cropped_image(image, coords)
